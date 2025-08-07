@@ -2,13 +2,15 @@ package system
 
 import (
 	"fmt"
-	"github.com/Trisia/gosysproxy"
 	log "github.com/sirupsen/logrus"
+	"github.com/wzshiming/sysproxy"
+	//_ "github.com/wzshiming/sysproxy"
 	"os"
 	"os/signal"
 	"proxy-dev/internal/config"
 	"sync"
 	"syscall"
+	_ "unsafe"
 )
 
 var (
@@ -16,10 +18,14 @@ var (
 	SigChan = make(chan os.Signal, 10)
 )
 
+////go:linkname set github.com/wzshiming/sysproxy.set
+//func set(key string, typ string, value string) error
+
 func SysProxyOn() error {
 	// 启动时设置系统代理
 	addr := fmt.Sprintf("%s:%d", config.Conf.Proxy.Host, config.Conf.Proxy.Port)
-	err := gosysproxy.SetGlobalProxy(addr)
+	err := sysproxy.OnHTTP(addr)
+	err = sysproxy.OnHTTPS(addr)
 	if err != nil {
 		log.Errorf("system proxy err: %v", err)
 		return err
@@ -31,7 +37,8 @@ func SysProxyOn() error {
 }
 
 func SysProxyOff() error {
-	err := gosysproxy.Off()
+	err := sysproxy.OffHTTP()
+	err = sysproxy.OffHTTPS()
 	log.Warn("system proxy off: ", err == nil)
 	return err
 }
