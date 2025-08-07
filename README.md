@@ -8,23 +8,29 @@ proxy-dev
 
 # 打包
 
+安装依赖
 ```shell
-go install fyne.io/tools/cmd/fyne@latest # 安装 fyne cmd
-fyne package --release --id proxy.dev -os windows -icon assets/logo.png # windows加入图标打包
+#Ubuntu/Debian
+sudo apt-get install -y libx11-dev libgl1-mesa-dev xorg-dev
+sudo apt-get install -y libxxf86vm-dev
+
+#CentOS/RHEL
+sudo yum install -y libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel mesa-libGL-devel
+sudo yum install -y libXxf86vm-devel
 ```
 
-包太大,剔除多余并压缩
-
-```bash
-#最小打包
-#-ldflags=“参数”： 表示将引号里面的参数传给编译器
-#-s：去掉符号信息（这样panic时，stack trace就没有任何文件名/行号信息了，这等价于普通C/C+=程序被strip的效果）
-#-w：去掉DWARF调试信息 （得到的程序就不能用gdb调试了）
-#-H windowsgui : 以windows gui形式打包，不带dos窗口。其中注意H是大写的
+```shell
+# 1.正常打包
 go build -ldflags="-s -w -H windowsgui" -o proxy-dev.exe main.go 
 
-#使用upx再次压缩(https://github.com/upx/upx/releases/tag/v4.1.0)
-upx -9 proxy-dev.exe
+# 2.程序加入图标
+go install fyne.io/tools/cmd/fyne@latest 
+fyne package --release --id proxy.dev -os windows -icon assets/logo.png
+fyne package --release --id proxy.dev -os darwin -icon assets/logo.png
+fyne package --release --id proxy.dev -os linux -icon assets/logo.png
+
+# 使用upx压缩(https://github.com/upx/upx/releases/tag/v4.1.0)
+upx proxy-dev.exe
 ```
 
 # 使用:

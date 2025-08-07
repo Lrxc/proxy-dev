@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"proxy-dev/internal/util"
 	"runtime"
-	"syscall"
 )
 
 // 检查证书是否已存在于根证书存储中
@@ -31,9 +30,7 @@ func CheckExistCert(certPath string) (bool, error) {
 
 	switch runtime.GOOS {
 	case "windows":
-		cmd := exec.Command("certutil", "-user", "-verifystore", "Root")
-		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true} //隐藏一闪的黑窗口
-		output, err := cmd.CombinedOutput()
+		output, err := util.Exec("certutil", "-user", "-verifystore", "Root")
 		if err != nil {
 			return false, fmt.Errorf("检查证书存储失败: %v", err)
 		}
@@ -42,14 +39,12 @@ func CheckExistCert(certPath string) (bool, error) {
 		return bytes.Contains(output, []byte(fingerprint)), nil
 	case "darwin": // macOS
 		// macOS - 使用 security 检查证书
-		cmd := exec.Command("security", "find-certificate", "-c", cert.Subject.CommonName, "-a", "/Library/Keychains/System.keychain")
-		err := cmd.Run()
+		_, err := util.Exec("security", "find-certificate", "-c", cert.Subject.CommonName, "-a", "/Library/Keychains/System.keychain")
 		return err == nil, nil
 
 	case "linux":
 		// Linux - 检查证书目录
-		cmd := exec.Command("ls", "/usr/local/share/ca-certificates/")
-		output, err := cmd.CombinedOutput()
+		output, err := util.Exec("ls", "/usr/local/share/ca-certificates/")
 		if err != nil {
 			return false, fmt.Errorf("检查证书目录失败: %v", err)
 		}
@@ -61,26 +56,21 @@ func CheckExistCert(certPath string) (bool, error) {
 }
 
 func InstallCert(certPath string) error {
-	var cmd *exec.Cmd
+	var err error
 
 	switch runtime.GOOS {
 	case "windows":
 		//cmd = exec.Command("cmd", "/c", "start", "", certPath)
-		cmd = exec.Command("certutil", "-user", "-addstore", "-f", "Root", certPath)
-		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true} //隐藏一闪的黑窗口
+		_, err = util.Exec("certutil", "-user", "-addstore", "-f", "Root", certPath)
 	case "darwin":
-		cmd = exec.Command("open", certPath)
+		_, err = util.Exec("open", certPath)
 	case "linux":
-		cmd = exec.Command("xdg-open", certPath)
+		_, err = util.Exec("xdg-open", certPath)
 	default:
 		return fmt.Errorf("不支持的操作系统: %s", runtime.GOOS)
 	}
 
-	_, err := cmd.CombinedOutput()
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func InstallCertWithRoot(certPath string) error {
