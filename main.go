@@ -8,8 +8,8 @@ import (
 
 func init() {
 	system.IsAlreadyRunning()
-	config.InitConfig()
 	config.InitLog()
+	config.InitConfig()
 }
 
 func main() {
