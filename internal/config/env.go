@@ -31,13 +31,13 @@ type Proxy struct {
 
 type Rule struct {
 	Enable bool
-	Type   string
+	Type   string `json:"type,omitempty"`
 
-	Surl string
-	Turl string
+	Surl string `json:"surl,omitempty"`
+	Turl string `json:"turl,omitempty"`
 
-	Sdata string
-	Tdata string
+	Sdata string `json:"sdata,omitempty"`
+	Tdata string `json:"tdata,omitempty"`
 }
 
 const confname = "conf.yml"
@@ -82,10 +82,13 @@ func ReadConf(msg string) {
 }
 
 func WriteJson(msg string) error {
-	err := json.Unmarshal([]byte(msg), &Conf.Rule)
+	var rule []Rule
+	err := json.Unmarshal([]byte(msg), &rule)
 	if err != nil {
 		return err
 	}
+
+	Conf.Rule = rule
 	return WriteConf(Conf)
 }
 
