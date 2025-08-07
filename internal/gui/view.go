@@ -10,11 +10,13 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/energye/systray"
+	log "github.com/sirupsen/logrus"
 	"image/color"
 	"proxy-dev/assets"
 	"proxy-dev/internal/config"
 	"proxy-dev/internal/gui/cus"
 	"proxy-dev/internal/system"
+	"runtime"
 	"syscall"
 )
 
@@ -81,7 +83,15 @@ func initTray(myApp fyne.App, myWindow fyne.Window) {
 		})
 	}
 
-	go systray.Run(onReady, nil)
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Errorf("%s not support tray", runtime.GOOS)
+			}
+		}()
+
+		systray.Run(onReady, nil)
+	}()
 
 	// 拦截关闭事件
 	myWindow.SetCloseIntercept(func() {
