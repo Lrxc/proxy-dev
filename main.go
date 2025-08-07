@@ -1,10 +1,14 @@
 package main
 
 import (
+	"embed"
 	"proxy-dev/internal/config"
 	"proxy-dev/internal/gui"
 	"proxy-dev/internal/system"
 )
+
+//go:embed frontend/dist
+var assets embed.FS
 
 func init() {
 	system.IsAlreadyRunning()
@@ -13,5 +17,5 @@ func init() {
 }
 
 func main() {
-	gui.Gui()
+	gui.Gui(assets)
 }
