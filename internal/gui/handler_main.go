@@ -41,6 +41,34 @@ func checkCert(myWindow fyne.Window) {
 	}
 }
 
+// 菜单栏
+func makeMenu(myApp fyne.App, myWindow fyne.Window) *fyne.MainMenu {
+	newItem := fyne.NewMenuItem("编辑", editRuleOnClick(myApp))
+
+	proxyItme := fyne.NewMenuItem("自动开启系统代理", nil)
+	proxyItme.Checked = config.Conf.System.AutoProxy
+	proxyItme.Action = settingProxyOnClick(myWindow, proxyItme)
+
+	httpsItme := fyne.NewMenuItem("启用HTTPS", nil)
+	httpsItme.Checked = config.Conf.System.Https
+	httpsItme.Action = settingHttpsOnClick(myWindow, httpsItme)
+
+	exitItme := fyne.NewMenuItem("最小化退出", nil)
+	exitItme.Checked = config.Conf.System.MinExit
+	exitItme.Action = settingExitOnClick(myWindow, exitItme)
+
+	caItme := fyne.NewMenuItem("安装证书", settingInstallCa(myWindow))
+	aboutItem := fyne.NewMenuItem("关于", func() {
+		dialog.ShowInformation("关于", config.AppName, myWindow)
+	})
+
+	menu1 := fyne.NewMenu("File", newItem)
+	menu2 := fyne.NewMenu("Setting", proxyItme, httpsItme, exitItme)
+	menu3 := fyne.NewMenu("About", caItme, aboutItem)
+
+	return fyne.NewMainMenu(menu1, menu2, menu3)
+}
+
 func settingOnClick(myWindow fyne.Window, itme *widget.ToolbarAction) func() {
 	return func() {
 		proxyItme := fyne.NewMenuItem("自动开启系统代理", nil)
