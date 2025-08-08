@@ -22,6 +22,7 @@ import (
 
 func Gui() {
 	myApp := app.New()
+	myApp.SetIcon(&fyne.StaticResource{StaticContent: assets.Read("logo.png")})
 	myWindow := myApp.NewWindow(config.AppName)          //主窗口
 	myWindow.Resize(fyne.NewSize(APP_WIDTH, APP_HEIGHT)) //窗口大小
 	myWindow.CenterOnScreen()                            //窗口居中
@@ -125,6 +126,8 @@ func initView(myApp fyne.App, myWindow fyne.Window) *fyne.Container {
 		setItem,
 		helpItem,
 	)
+
+	//myWindow.SetMainMenu(makeMenu(myApp, myWindow))
 
 	//ca证书提示
 	caBtn = widget.NewButton(CA_STATUS, nil)
