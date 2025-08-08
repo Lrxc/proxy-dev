@@ -47,7 +47,8 @@ func InitConfig() {
 	exit := util.FileExist(confname)
 	if !exit {
 		json := &Config{
-			Proxy: Proxy{Host: "127.0.0.1", Port: 10086},
+			System: System{MinExit: true},
+			Proxy:  Proxy{Host: "127.0.0.1", Port: 10086},
 			Rule: []Rule{
 				{Enable: true, Type: PROXY_TYPE_REDIRECT, Surl: "https://www.baidu.com", Turl: "https://www.bing.com"},
 				{Enable: true, Type: PROXY_TYPE_RESPMOD, Surl: "https://www.test.com", Sdata: "name", Tdata: "alias"},

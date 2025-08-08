@@ -107,6 +107,7 @@ func (p *Proxy) handleHTTPSWithMITM(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer clientConn.Close()
+	p.AddConnSess(clientConn)
 	//clientConn.SetDeadline(time.Now().Add(3 * time.Second)) //连接自动断开
 
 	// 必须立即发送200响应
@@ -127,6 +128,7 @@ func (p *Proxy) handleHTTPSWithMITM(w http.ResponseWriter, r *http.Request) {
 		Certificates: []tls.Certificate{*cert},
 	})
 	defer tlsConn.Close()
+	p.AddConnSess(tlsConn)
 
 	if err := tlsConn.Handshake(); err != nil {
 		p.logger.Printf("TLS handshake with client failed: %v\n", err)

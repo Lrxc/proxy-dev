@@ -86,7 +86,7 @@ func settingOnClick(myWindow fyne.Window, itme *widget.ToolbarAction) func() {
 		// 创建子菜单项
 		menuItems := []*fyne.MenuItem{
 			proxyItme,
-			//httpsItme,
+			httpsItme,
 			exitItme,
 		}
 

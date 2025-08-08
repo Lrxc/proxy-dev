@@ -4,10 +4,16 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"proxy-dev/internal/config"
 	"strings"
 )
 
 func (p *Proxy) handleHTTPS(w http.ResponseWriter, r *http.Request) {
+	if !config.Conf.System.Https {
+		p.handleHTTPSDirect(w, r)
+		return
+	}
+
 	if p.reqHandler != nil {
 		request := r.Clone(r.Context())
 
@@ -39,6 +45,7 @@ func (p *Proxy) handleHTTPSDirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer destConn.Close()
+	p.AddConnSess(destConn)
 
 	// 劫持客户端连接
 	hijacker, ok := w.(http.Hijacker)
@@ -54,6 +61,7 @@ func (p *Proxy) handleHTTPSDirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer clientConn.Close()
+	p.AddConnSess(clientConn)
 
 	// 告诉客户端连接已建立
 	clientConn.Write([]byte("HTTP/1.1 200 Connection Established\r\n\r\n"))
