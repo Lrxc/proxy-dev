@@ -6,12 +6,17 @@ import (
 	"net/http"
 	"proxy-dev/internal/config"
 	"proxy-dev/internal/proxy"
+	"proxy-dev/internal/system"
 )
 
-var server *http.Server
+var (
+	server *http.Server
+	lproxy *proxy.Proxy
+)
 
 func StartServer(https bool) {
 	proxy := proxy.NewProxy()
+	lproxy = proxy
 
 	proxy.LoadCert(LoadCert)
 	proxy.ShuntHandler(ShuntHandler)
@@ -23,6 +28,17 @@ func StartServer(https bool) {
 
 	server = &http.Server{Addr: addr, Handler: proxy}
 	server.ListenAndServe()
+}
+
+func ReDeploy(b bool) error {
+	if lproxy == nil {
+		return nil
+	}
+
+	system.SysProxyOff()
+	lproxy.CloseConnSess() //断开所有的http/https连接
+	system.SysProxyOn()
+	return nil
 }
 
 func ReStartServer(b bool) error {

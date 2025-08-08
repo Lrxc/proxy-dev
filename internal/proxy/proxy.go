@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
 	"strings"
 )
@@ -13,11 +14,13 @@ type (
 
 // 实现了http.Handler接口
 type Proxy struct {
-	shuntHandler ReqHandler
-	reqHandler   ReqHandler
-	respHandler  RespHandler
+	connSess []net.Conn //缓存建立的连接
 
-	logger Logger
+	shuntHandler ReqHandler  //分流处理器
+	reqHandler   ReqHandler  //请求处理器
+	respHandler  RespHandler //返回处理器
+
+	logger Logger //日志接口
 }
 
 func NewProxy() *Proxy {
@@ -45,6 +48,16 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (p *Proxy) IsWebSocketUpgrade(r *http.Request) bool {
 	return strings.EqualFold(r.Header.Get("Connection"), "upgrade") &&
 		strings.EqualFold(r.Header.Get("Upgrade"), "websocket")
+}
+
+func (p *Proxy) AddConnSess(conn net.Conn) {
+	p.connSess = append(p.connSess, conn)
+}
+
+func (p *Proxy) CloseConnSess() {
+	for _, sess := range p.connSess {
+		sess.Close()
+	}
 }
 
 // 设置自定义证书
