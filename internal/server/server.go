@@ -60,6 +60,7 @@ func StopServer() error {
 	if err := server.Close(); err != nil {
 		return err
 	}
+	lproxy.CloseConnSess() //断开所有的http/https连接
 
 	log.Info("server stopped")
 	return nil
