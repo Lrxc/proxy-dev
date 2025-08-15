@@ -1,6 +1,6 @@
 package config
 
-var AppName = "Proxy-Dev v1.0.1"
+var AppName = "Proxy-Dev v1.0.2"
 
 // 工作路径
 var DataPath = "data"

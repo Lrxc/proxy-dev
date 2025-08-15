@@ -13,8 +13,8 @@ func InitLog() {
 		Filename:   LogPath,
 		MaxSize:    1, // megabytes
 		MaxBackups: 3,
-		MaxAge:     7,    //days
-		Compress:   true, // disabled by default
+		MaxAge:     7, //days
+		//Compress:   true, // disabled by default
 	}
 	//同时将日志写入文件和控制台
 	writer := io.MultiWriter(file, os.Stdout)
