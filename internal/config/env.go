@@ -51,7 +51,7 @@ func InitConfig() {
 			Proxy:  Proxy{Host: "127.0.0.1", Port: 10086},
 			Rule: []Rule{
 				{Enable: true, Type: PROXY_TYPE_REDIRECT, Surl: "https://www.baidu.com", Turl: "https://www.bing.com"},
-				{Enable: true, Type: PROXY_TYPE_RESPMOD, Surl: "https://www.test.com", Sdata: "name", Tdata: "alias"},
+				{Enable: true, Type: PROXY_TYPE_RESMOD, Surl: "https://www.test.com", Sdata: "name", Tdata: "alias"},
 			},
 		}
 		//写入默认配置文件

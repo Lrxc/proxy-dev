@@ -95,7 +95,7 @@ func ResHandler(w *http.Response, body []byte) []byte {
 		if !s.Enable {
 			continue
 		}
-		if s.Type != config.PROXY_TYPE_RESPMOD {
+		if s.Type != config.PROXY_TYPE_RESMOD {
 			continue
 		}
 

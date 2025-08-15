@@ -11,5 +11,5 @@ var LogPath = "logs/logrus.log"
 const (
 	PROXY_TYPE_REDIRECT = "redirect"
 	PROXY_TYPE_REQMOD   = "reqmod"
-	PROXY_TYPE_RESPMOD  = "respmod"
+	PROXY_TYPE_RESMOD  = "resmod"
 )
