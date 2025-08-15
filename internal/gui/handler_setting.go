@@ -3,7 +3,10 @@ package gui
 import (
 	"fmt"
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/widget"
+	"net/url"
 	"proxy-dev/assets"
 	"proxy-dev/internal/config"
 	"proxy-dev/internal/server"
@@ -78,5 +81,29 @@ func settingInstallCa(myWindow fyne.Window) func() {
 			dialog.ShowError(err, myWindow)
 			return
 		}
+	}
+}
+
+func about(myWindow fyne.Window) func() {
+	return func() {
+		// 创建超链接组件（蓝色字体）
+		url, _ := url.Parse("https://github.com/Lrxc/proxy-dev")
+		link := widget.NewHyperlink("Github", url)
+		link.Alignment = fyne.TextAlignCenter // 居中显示
+
+		// 创建对话框内容
+		content := widget.NewLabel(config.AppName)
+		container := container.NewVBox(
+			content,
+			link,
+		)
+
+		// 显示对话框
+		dialog.ShowCustom(
+			"",
+			"OK",
+			container,
+			myWindow,
+		)
 	}
 }
