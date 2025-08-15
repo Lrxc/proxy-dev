@@ -11,7 +11,7 @@ import (
 func InitLog() {
 	file := &lumberjack.Logger{
 		Filename:   LogPath,
-		MaxSize:    500, // megabytes
+		MaxSize:    1, // megabytes
 		MaxBackups: 3,
 		MaxAge:     7,    //days
 		Compress:   true, // disabled by default

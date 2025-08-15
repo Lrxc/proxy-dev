@@ -105,9 +105,7 @@ func settingOnClick(myWindow fyne.Window, itme *widget.ToolbarAction) func() {
 func helpOnClick(myWindow fyne.Window, itme *widget.ToolbarAction) func() {
 	return func() {
 		caItme := fyne.NewMenuItem("安装证书", settingInstallCa(myWindow))
-		aboutItem := fyne.NewMenuItem("关于", func() {
-			dialog.ShowInformation("关于", config.AppName, myWindow)
-		})
+		aboutItem := fyne.NewMenuItem("关于", about(myWindow))
 
 		// 创建子菜单项
 		menuItems := []*fyne.MenuItem{
