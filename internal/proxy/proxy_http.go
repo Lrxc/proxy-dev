@@ -19,13 +19,14 @@ func (p *Proxy) handleHTTP(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Scheme == "" {
 			req.URL.Scheme = "http"
 		}
-		req.URL.Host = r.Host
-		req.Host = r.Host
 
 		//请求拦截器
 		if p.reqHandler != nil {
 			p.reqHandler(w, r)
 		}
+
+		req.URL.Host = r.URL.Host
+		req.Host = r.Host
 	}
 
 	modifyResponse := func(resp *http.Response) error {
